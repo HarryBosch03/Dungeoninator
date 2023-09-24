@@ -1,0 +1,27 @@
+﻿Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DungeoninatorDev", "DungeoninatorDev.csproj", "{19C27165-C342-4D60-AF85-BF19B45C394B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dungeoninator", "..\Dungeoninator\Dungeoninator.csproj", "{31E57022-3858-452E-91B1-F4C5733259CB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+	Debug|Any CPU = Debug|Any CPU
+	ExportDebug|Any CPU = ExportDebug|Any CPU
+	ExportRelease|Any CPU = ExportRelease|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{19C27165-C342-4D60-AF85-BF19B45C394B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{19C27165-C342-4D60-AF85-BF19B45C394B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{19C27165-C342-4D60-AF85-BF19B45C394B}.ExportDebug|Any CPU.ActiveCfg = ExportDebug|Any CPU
+		{19C27165-C342-4D60-AF85-BF19B45C394B}.ExportDebug|Any CPU.Build.0 = ExportDebug|Any CPU
+		{19C27165-C342-4D60-AF85-BF19B45C394B}.ExportRelease|Any CPU.ActiveCfg = ExportRelease|Any CPU
+		{19C27165-C342-4D60-AF85-BF19B45C394B}.ExportRelease|Any CPU.Build.0 = ExportRelease|Any CPU
+		{31E57022-3858-452E-91B1-F4C5733259CB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{31E57022-3858-452E-91B1-F4C5733259CB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{31E57022-3858-452E-91B1-F4C5733259CB}.ExportDebug|Any CPU.ActiveCfg = Debug|Any CPU
+		{31E57022-3858-452E-91B1-F4C5733259CB}.ExportDebug|Any CPU.Build.0 = Debug|Any CPU
+		{31E57022-3858-452E-91B1-F4C5733259CB}.ExportRelease|Any CPU.ActiveCfg = Debug|Any CPU
+		{31E57022-3858-452E-91B1-F4C5733259CB}.ExportRelease|Any CPU.Build.0 = Debug|Any CPU
+	EndGlobalSection
+EndGlobal

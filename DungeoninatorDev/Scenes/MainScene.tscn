@@ -1,0 +1,14 @@
+[gd_scene load_steps=3 format=3 uid="uid://bv1tghegb5k23"]
+
+[ext_resource type="Script" path="res://Scripts/CameraController.gd" id="1_oytja"]
+[ext_resource type="Script" path="res://Scripts/DungeonSpawner.cs" id="2_qy3q8"]
+
+[node name="MainScene" type="Node2D"]
+
+[node name="CameraController" type="Node2D" parent="."]
+script = ExtResource("1_oytja")
+
+[node name="Camera" type="Camera2D" parent="CameraController"]
+
+[node name="DungeonSpawner" type="Node2D" parent="."]
+script = ExtResource("2_qy3q8")
