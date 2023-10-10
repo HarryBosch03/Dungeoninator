@@ -1,98 +1,92 @@
-using Godot;
+using System;
 using Dungeoninator;
-using System.Collections.Generic;
+using Dungeoninator.DataStructures;
+using Dungeoninator.TilemapRasterization;
+using Godot;
+using Godot.Collections;
 
 namespace DungeoninatorDev.Scripts;
 
 public partial class DungeonSpawner : Node2D
 {
-    private List<Rect> rectangles = new();
-    private List<int> connections = new();
+    [Export] public LabelSettings labelSettings;
+    
+    private TileMap tilemap;
 
     private int max = 0;
+    private Random rng = new();
 
+    private bool wasSpacePressed;
+    private Array<Label> labels = new();
+    
     public override void _Ready()
     {
-        
+        tilemap = GetNode<TileMap>("TileMap");
+        Regenerate();
     }
 
     public override void _Process(double delta)
     {
-        QueueRedraw();
-
-        var previous = max;
-
-        if (Input.IsKeyPressed(Key.Left)) max--;
-        if (Input.IsKeyPressed(Key.Right)) max++;
-        if (max < 0) max = 0;
-
-        if (max != previous || Input.IsKeyPressed(Key.Space))
+        var spacePressed = Input.IsKeyPressed(Key.Space); 
+        if (spacePressed && !wasSpacePressed)
         {
-            connections.Clear();
-            var connectionGenerator = new ConnectionGenerator();
-            connectionGenerator.GenerateConnections(connections, i => rectangles[i].Center, rectangles.Count, GD.Print, max);
+            Regenerate();
         }
-
-        if (Input.IsKeyPressed(Key.Space))
-        {
-            RandomRects(4);
-            var spacialArrangement = new SpacialArranger();
-            spacialArrangement.padding = 10.0f;
-
-            spacialArrangement.Separate(rectangles);
-        }
+        wasSpacePressed = spacePressed;
     }
 
-    public override void _PhysicsProcess(double delta)
+    public void Regenerate()
     {
-        //var r = rectangles[0];
-        //r.Center = GetGlobalMousePosition().Sn();
-        //rectangles[0]= r;
-    }
+        var graph = new DungeonGraph();
+        graph.Add(new Room("Entrance").WidthHeight(6, 6));
+        graph.Add(new Room("CombatRoom.0").WidthHeight(8, 12));
+        graph.Add(new Room("CombatRoom.1").WidthHeight(14, 14));
+        graph.Add(new Room("ChestRoom").WidthHeight(6, 6));
+        graph.Add(new Room("BossRoom").WidthHeight(16, 24));
+        graph.Add(new Room("Exit").WidthHeight(6, 6));
 
-    public override void _Draw()
-    {
-        //    var a = new Vector2(5, 3);
-        //    var b = new Vector2(7, -2);
-        //    var c = new Vector2(-3, 5);
-        //    var d = GetGlobalMousePosition();
-        //
-        //    if (!ConnectionGenerator.IsDelaunay(a.Sn(), b.Sn(), c.Sn(), d.Sn(), out var center))
-        //    {
-        //     a = d;
-        //    }
-        //    
-        //    DrawArc(center.Gd(), (center.Gd() - a).Length(), 0.0f, 360.0f, 128, new Color(1.0f, 1.0f, 1.0f, 0.1f));
-        //    
-        //    DrawLine(a, b, Colors.White);
-        //    DrawLine(b, c, Colors.White);
-        //    DrawLine(c, a, Colors.White);
-        // DrawCircle(d, 0.1f, Colors.Red);
+        var spacialArranger = new SpacialArranger();
+        spacialArranger.separationMode = SpacialArranger.SeparationMode.CenterDifference;
+        spacialArranger.Separate(graph);
+        var data = new TilemapRasterizer().Rasterize(graph);
 
-        foreach (var r in rectangles)
+        var cells = new Array<Vector2I>();
+        foreach (var e in data.tiles)
         {
-            DrawRect(new Rect2((r.Center - r.Size * 0.5f).Gd(), r.Size.Gd()), Colors.White, false);
+            cells.Add(new Vector2I(e.x, e.y));   
+        }
+        tilemap.Clear();
+        tilemap.SetCellsTerrainConnect(0, cells, 0, 0);
+
+        while (labels.Count < graph.rooms.Count)
+        {
+            var newLabel = new Label();
+
+            newLabel.LabelSettings = labelSettings;
+            
+            labels.Add(newLabel);
+            AddChild(newLabel);
+        }
+        while (graph.rooms.Count < labels.Count)
+        {
+            var oldLabel = labels[^1];
+            labels.Remove(oldLabel);
+            RemoveChild(oldLabel);
+            oldLabel.QueueFree();
         }
 
-        for (var i = 0; i < connections.Count / 2; i++)
+        for (var i = 0; i < graph.rooms.Count; i++)
         {
-            var a = rectangles[connections[2 * i]].Center.Gd();
-            var b = rectangles[connections[2 * i + 1]].Center.Gd();
-
-            DrawLine(a, b, Colors.Red);
+            var room = graph.rooms[i];
+            var label = labels[i];
+            label.Text = $"{i + 1}. {room.identifier}";
+            label.GlobalPosition = room.rect.Center.Gd() * 16.0f;
+            label.RotationDegrees = 45.0f;
+            label.PivotOffset = new Vector2(0.0f, label.Size.Y / 2.0f);
         }
     }
 
-    public void RandomRects(int count)
-    {
-        var rng = new System.Random();
-
-        rectangles.Clear();
-        for (var i = 0; i < count; i++)
-        {
-            var r = new Rect();
-            r.Size = new System.Numerics.Vector2(rng.Next(2, 5) * 20.0f, rng.Next(2, 5) * 20.0f);
-            rectangles.Add(r);
-        }
-    }
+    private float Random(float max = 1.0f) => Random(0.0f, max);
+    private float Random(float min, float max) => (float)rng.NextDouble() * (max - min) + min;
+    private float Variate(float center = 1.0f, float variation = 0.0f) => center + ((float)rng.NextDouble() - 0.5f) * variation;
 }
