@@ -1,19 +1,16 @@
-[gd_scene load_steps=13 format=3 uid="uid://bv1tghegb5k23"]
+[gd_scene load_steps=12 format=3 uid="uid://bv1tghegb5k23"]
 
 [ext_resource type="Script" path="res://Scripts/CameraController.gd" id="1_oytja"]
 [ext_resource type="Shader" path="res://Shaders/BackgroundGrid.gdshader" id="2_2hi4l"]
 [ext_resource type="Texture2D" uid="uid://224jqndw6uyf" path="res://Sprites/Grid.png" id="2_c3wjk"]
 [ext_resource type="Script" path="res://Scripts/DungeonSpawner.cs" id="2_qy3q8"]
-[ext_resource type="Shader" path="res://Shaders/Unlit.gdshader" id="3_ottrm"]
 [ext_resource type="Texture2D" uid="uid://cjvmf2bp7dvx7" path="res://Sprites/Tile.png" id="4_cidem"]
 [ext_resource type="FontFile" uid="uid://b8f5sjwqyw0f1" path="res://Fonts/Montserrat.ttf" id="7_ram0a"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_4y6vl"]
 shader = ExtResource("2_2hi4l")
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_t0vd1"]
-shader = ExtResource("3_ottrm")
-shader_parameter/_Color = Vector4(1, 0, 1, 1)
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_e2e0k"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_c2b0l"]
 font = ExtResource("7_ram0a")
@@ -472,7 +469,9 @@ region_enabled = true
 region_rect = Rect2(0, 0, 1280, 720)
 
 [node name="DungeonSpawner" type="Node2D" parent="."]
-material = SubResource("ShaderMaterial_t0vd1")
+top_level = true
+z_index = 4096
+material = SubResource("CanvasItemMaterial_e2e0k")
 script = ExtResource("2_qy3q8")
 labelSettings = SubResource("LabelSettings_c2b0l")
 

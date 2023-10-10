@@ -1,3 +1,5 @@
+using System.Numerics;
+
 namespace Dungeoninator.DataStructures;
 
 public class DungeonGraph
@@ -8,6 +10,17 @@ public class DungeonGraph
     public DungeonGraph Add(params Room[] rooms)
     {
         this.rooms.AddRange(rooms);
+        return this;
+    }
+
+    public DungeonGraph Arm(params Room[] rooms)
+    {
+        var offset = this.rooms.Count;
+        Add(rooms);
+        for (var i = 0; i < rooms.Length - 1; i++)
+        {
+            connections.Add(new Connection(offset + i, offset + i + 1));
+        }
         return this;
     }
 
